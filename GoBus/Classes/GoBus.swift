@@ -81,7 +81,8 @@ public class GoBus {
         
         request.HTTPMethod = "POST"
         let date = NSDate()
-        request.allHTTPHeaderFields = ["Content-Type":"application/json", "Accept-Language":"en", "Date": date.dateFormatter().stringFromDate(date), "X-Api-Key":"\(apiKey)"]
+        let string = date.dateFormatter().stringFromDate(date)
+        request.allHTTPHeaderFields = ["Content-Type":"application/json", "Accept-Language":"en", "Date":date.dateFormatter().stringFromDate(date) , "X-Api-Key":"\(apiKey)"]
         request.HTTPShouldHandleCookies = false
         
         let params = ["email": email, "password": password] as Dictionary<String, String>
@@ -95,7 +96,13 @@ public class GoBus {
             }
             
             do {
-                if var jsonResult = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? [String:AnyObject] {
+                if var jsonResult = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? NSDictionary {
+                    
+                    if (jsonResult["code"] as? Int) != nil {
+                        print("code: \(jsonResult["code"] as! Int) | message: \(jsonResult["message"] as! String)")
+                        return
+                    }
+                    
                     let userDefaults = NSUserDefaults.standardUserDefaults()
                     userDefaults.setObject(["accessToken":jsonResult["token"] as! String,"date": date], forKey: "GoBusAccessToken")
                     userDefaults.setObject(["appKey": apiKey, "email": email, "password": password, "url": url], forKey: "GoBusUser")
@@ -267,7 +274,9 @@ public class GoBus {
      
      - SeeAlso:  `cancel(_:)` if you will use *GoBusDelegate* and *repeatAfter*
      
-     */    public func getBus(inLine inLine: String?=nil, repeatAfter: Double?=nil, completion: (([Bus]?, [Line]?, NSError?) -> Void)) -> cancelClosure?{
+     */
+    
+    public func getBus(inLine inLine: String?=nil, repeatAfter: Double?=nil, completion: (([Bus]?, [Line]?, NSError?) -> Void)) -> cancelClosure?{
         
         backgroundThread(background: {
             self.get(inLine != nil ? GoBusGetTypes.VeiculosLinhaBusca : GoBusGetTypes.Veiculos, search: inLine) { (data, response, error) in
