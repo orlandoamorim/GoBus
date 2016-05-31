@@ -81,7 +81,6 @@ public class GoBus {
         
         request.HTTPMethod = "POST"
         let date = NSDate()
-        let string = date.dateFormatter().stringFromDate(date)
         request.allHTTPHeaderFields = ["Content-Type":"application/json", "Accept-Language":"en", "Date":date.dateFormatter().stringFromDate(date) , "X-Api-Key":"\(apiKey)"]
         request.HTTPShouldHandleCookies = false
         
@@ -96,7 +95,7 @@ public class GoBus {
             }
             
             do {
-                if var jsonResult = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? NSDictionary {
+                if let jsonResult = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? NSDictionary {
                     
                     if (jsonResult["code"] as? Int) != nil {
                         print("code: \(jsonResult["code"] as! Int) | message: \(jsonResult["message"] as! String)")
@@ -243,7 +242,6 @@ public class GoBus {
                     completion(nil, error)
                     return
                 }
-                
                 
                 do {
                     if let jsonResult = try NSJSONSerialization.JSONObjectWithData(data!, options: []) as? NSArray {
