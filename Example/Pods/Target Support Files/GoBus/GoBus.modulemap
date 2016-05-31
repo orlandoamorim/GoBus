@@ -1,0 +1,6 @@
+framework module GoBus {
+  umbrella header "GoBus-umbrella.h"
+
+  export *
+  module * { export * }
+}

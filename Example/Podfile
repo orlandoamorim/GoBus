@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'GoBus_Example' do
+  pod 'GoBus', :path => '../'
+
+  target 'GoBus_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
